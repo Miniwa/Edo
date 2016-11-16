@@ -10,3 +10,6 @@ CACHE INTERNAL "edo-base: Include Directories" FORCE)
 include_directories(${edo-base_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME} STATIC ${edo-base_CPP} ${edo-base_HPP})
+
+install(TARGETS ${PROJECT_NAME} DESTINATION "${edo_LIB_INSTALL_DIR}")
+install(FILES ${edo-base_HPP} DESTINATION "${edo_HEADER_INSTALL_DIR}/base")
