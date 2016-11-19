@@ -88,43 +88,63 @@ BOOST_AUTO_TEST_CASE(test_get)
 BOOST_AUTO_TEST_CASE(test_get_lex_with_int)
 {
     conf.put("fps", "60");
-    BOOST_REQUIRE_EQUAL(conf.get_lex<int32_t>("fps"), 60);
+    BOOST_REQUIRE_EQUAL(conf.get<int32_t>("fps"), 60);
 }
 
 BOOST_AUTO_TEST_CASE(test_get_lex_throws_runtime_error_when_bad_cast)
 {
     conf.put("fps", "60.00012");
-    BOOST_REQUIRE_THROW(conf.get_lex<int32_t>("fps"), std::runtime_error);
+    BOOST_REQUIRE_THROW(conf.get<int32_t>("fps"), std::runtime_error);
 }
 
 BOOST_AUTO_TEST_CASE(test_get_lex_with_float)
 {
     conf.put("fps", "40.00123");
-    BOOST_REQUIRE_CLOSE(conf.get_lex<float>("fps"), 40.00123, 0.0001);
+    BOOST_REQUIRE_CLOSE(conf.get<float>("fps"), 40.00123, 0.0001);
 }
 
 BOOST_AUTO_TEST_CASE(test_get_lex_with_bool)
 {
     conf.put("enabled", "1");
-    BOOST_REQUIRE_EQUAL(conf.get_lex<bool>("enabled"), true);
+    BOOST_REQUIRE_EQUAL(conf.get<bool>("enabled"), true);
+}
+
+BOOST_AUTO_TEST_CASE(test_put_replaces_old)
+{
+    conf.put("fps", "40");
+    conf.put("fps", "60");
+    BOOST_REQUIRE_EQUAL(conf.get("fps"), "60");
 }
 
 BOOST_AUTO_TEST_CASE(test_put_lex_with_int)
 {
-    conf.put_lex<int32_t>("fps", 60);
+    conf.put<int32_t>("fps", 60);
     BOOST_REQUIRE_EQUAL(conf.get("fps"), "60");
 }
 
 BOOST_AUTO_TEST_CASE(test_put_lex_with_float)
 {
-    conf.put_lex<float>("fps", 60.0023);
+    conf.put<float>("fps", 60.0023);
     BOOST_REQUIRE_EQUAL(conf.get("fps"), "60.0023003");
 }
 
 BOOST_AUTO_TEST_CASE(test_put_lex_with_bool)
 {
-    conf.put_lex<bool>("enabled", true);
+    conf.put<bool>("enabled", true);
     BOOST_REQUIRE_EQUAL(conf.get("enabled"), "1");
+}
+
+BOOST_AUTO_TEST_CASE(test_erase_deletes_existing_element)
+{
+    conf.put("fps", "60");
+    conf.erase("fps");
+
+    BOOST_REQUIRE_EQUAL(conf.has_key("fps"), false);
+}
+
+BOOST_AUTO_TEST_CASE(test_erase_throws_out_of_range_on_nonexisting_element)
+{
+    BOOST_REQUIRE_THROW(conf.erase("fps"), std::out_of_range);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -44,7 +44,7 @@ namespace edo
         /// @throws out_of_range If given key does not exist in the map
         /// @throws runtime_error If the lexical casting fails
         template<typename T>
-        T get_lex(const std::string& key)
+        T get(const std::string& key)
         {
             std::string val = get(key);
 
@@ -59,7 +59,7 @@ namespace edo
             }
         }
 
-        /// Inserts a given value with given key into the map
+        /// Inserts or replaces a given value with given key in the map
         // TODO: And what if key already exists?
         void put(const std::string& key, const std::string& value);
 
@@ -67,7 +67,7 @@ namespace edo
         /// with given key into the map
         /// @throws runtime_error If the lexical casting fails
         template<typename T>
-        void put_lex(const std::string& key, const T value)
+        void put(const std::string& key, const T value)
         {
             std::string val;
 
