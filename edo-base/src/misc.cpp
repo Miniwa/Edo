@@ -21,3 +21,19 @@ std::vector<std::string> edo::split(const std::string& str, const char delim)
 
     return result;
 }
+
+edo::memaddr edo::follow(
+    edo::memaddr base,
+    std::vector<edo::memoffset>::iterator begin,
+    std::vector<edo::memoffset>::iterator end
+)
+{
+    memaddr result = base;
+
+    for(auto it = begin; it != end; it++)
+    {
+        result = *reinterpret_cast<memaddr*>(result + *it);
+    }
+
+    return result;
+}

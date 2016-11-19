@@ -6,5 +6,7 @@
 namespace edo
 {
     using byte = uint8_t;
+    using memaddr = uintptr_t;
+    using memoffset = intptr_t;
 }
 #endif
