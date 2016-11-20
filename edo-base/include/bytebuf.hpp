@@ -131,13 +131,15 @@ namespace edo
         /// Gets a float from given index
         float get_f(const std::size_t index);
 
-        /// Gets a float from the buffer and advances the buffer position
+        /// Gets a float from the buffer and advances the buffer position by
+        /// 4 bytes
         float get_f();
 
         /// Gets a double from given index
         double get_d(const std::size_t index);
 
-        /// Gets a double from the buffer and advances the buffer position
+        /// Gets a double from the buffer and advances the buffer position by
+        /// 8 bytes
         double get_d();
 
     private:
