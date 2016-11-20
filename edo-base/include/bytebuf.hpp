@@ -5,6 +5,7 @@
 
 #include "types.hpp"
 #include "strings.hpp"
+#include "endian.hpp"
 
 namespace std
 {
@@ -13,12 +14,18 @@ namespace std
 
 namespace edo
 {
-    /// A buffer of bytes
+    /// A endian aware buffer of bytes
     class Bytebuf
     {
     public:
         /// Default constructor
         Bytebuf();
+
+        /// Sets the endianness of the buffer
+        void set_endianness(edo::endianness order);
+
+        /// Returns the endianness of the buffer
+        edo::endianness get_endianness();
 
         /// Returns the size of the buffer
         std::size_t size();
@@ -107,6 +114,36 @@ namespace edo
         template<typename T>
         T get(const std::size_t index)
         {
+            T val = internal_get<T>(index);
+            return edo::order_to_native(val, order);
+        }
+
+        /// Gets an object of type T from the buffer and advances the buffer
+        /// position by sizeof(T) bytes
+        /// @throws out_of_range If requested type is too large
+        template<typename T>
+        T get()
+        {
+            T val = internal_get<T>();
+            return edo::order_to_native(val, order);
+        }
+
+        /// Gets a float from given index
+        float get_f(const std::size_t index);
+
+        /// Gets a float from the buffer and advances the buffer position
+        float get_f();
+
+        /// Gets a double from given index
+        double get_d(const std::size_t index);
+
+        /// Gets a double from the buffer and advances the buffer position
+        double get_d();
+
+    private:
+        template<typename T>
+        T internal_get(const std::size_t index)
+        {
             if(index < 0 || index > size())
                 throw std::out_of_range(INDEX_OUT_OF_RANGE);
 
@@ -117,20 +154,17 @@ namespace edo
             return *(T*)&buffer[index];
         }
 
-        /// Gets an object of type T from the buffer and advances the buffer
-        /// position by sizeof(T) bytes
-        /// @throws out_of_range If requested type is too large
         template<typename T>
-        T get()
+        T internal_get()
         {
-            T res = get<T>(get_pos());
+            T res = internal_get<T>(get_pos());
             move(sizeof(T));
 
             return res;
         }
 
-    private:
         std::vector<byte> buffer;
+        edo::endianness order;
         std::size_t position;
     };
 }

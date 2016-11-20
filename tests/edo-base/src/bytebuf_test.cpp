@@ -18,6 +18,13 @@ BOOST_AUTO_TEST_CASE(test_constructor_defaults)
 {
     BOOST_REQUIRE(b.get_pos() == 0);
     BOOST_REQUIRE(b.size() == 0);
+    BOOST_REQUIRE(b.get_endianness() == edo::endianness::native);
+}
+
+BOOST_AUTO_TEST_CASE(test_set_endianness_sets_correctly)
+{
+    b.set_endianness(edo::endianness::big);
+    BOOST_REQUIRE(b.get_endianness() == edo::endianness::big);
 }
 
 BOOST_AUTO_TEST_CASE(test_reserve_reserves_proper_capacity)
@@ -167,37 +174,171 @@ BOOST_AUTO_TEST_CASE(test_put_with_generated_type_moves_position)
     BOOST_REQUIRE(b.get<uint64_t>(0) == i);
 }
 
-BOOST_AUTO_TEST_CASE(test_get_primitive_type)
+BOOST_AUTO_TEST_CASE(test_put_get_with_float)
+{
+    float i = 10.1;
+    b.put(0, i);
+
+    BOOST_REQUIRE_EQUAL(sizeof(float), sizeof(uint32_t));
+    BOOST_REQUIRE_EQUAL(b.size(), 4);
+    BOOST_REQUIRE_EQUAL(b.get_pos(), 0);
+    BOOST_REQUIRE_EQUAL(b.get_f(0), i);
+}
+
+BOOST_AUTO_TEST_CASE(test_put_with_float_moves_position)
+{
+    float i = 10.1;
+    b.put(i);
+
+    BOOST_REQUIRE_EQUAL(b.size(), 4);
+    BOOST_REQUIRE_EQUAL(b.get_pos(), 4);
+    BOOST_REQUIRE_EQUAL(b.get_f(0), i);
+}
+
+BOOST_AUTO_TEST_CASE(test_put_get_with_double)
+{
+    double i = 10.1;
+    b.put(0, i);
+
+    BOOST_REQUIRE_EQUAL(sizeof(double), sizeof(uint64_t));
+    BOOST_REQUIRE_EQUAL(b.size(), 8);
+    BOOST_REQUIRE_EQUAL(b.get_pos(), 0);
+    BOOST_REQUIRE_EQUAL(b.get_d(0), i);
+}
+
+BOOST_AUTO_TEST_CASE(test_put_with_double_advances_position)
+{
+    double i = 10.1;
+    b.put(i);
+
+    BOOST_REQUIRE_EQUAL(b.size(), 8);
+    BOOST_REQUIRE_EQUAL(b.get_pos(), 8);
+    BOOST_REQUIRE_EQUAL(b.get_d(0), i);
+}
+
+BOOST_AUTO_TEST_CASE(test_put_little_endian)
+{
+    int32_t i = 100;
+    b.set_endianness(edo::endianness::little);
+    b.put(0, i);
+
+    const int32_t* ptr = reinterpret_cast<const int32_t*>(b.data());
+    BOOST_REQUIRE_EQUAL(*ptr, edo::native_to_little(i));
+}
+
+BOOST_AUTO_TEST_CASE(test_put_big_endian)
+{
+    int32_t i = 100;
+    b.set_endianness(edo::endianness::big);
+    b.put(0, i);
+
+    const int32_t* ptr = reinterpret_cast<const int32_t*>(b.data());
+    BOOST_REQUIRE_EQUAL(*ptr, edo::native_to_big(i));
+}
+
+BOOST_AUTO_TEST_CASE(test_get_generated_type)
+{
+    int32_t val = 10;
+    b.put(0, val);
+
+    BOOST_REQUIRE(b.get<int32_t>(0) == val);
+}
+
+BOOST_AUTO_TEST_CASE(test_get_generated_type_advances_position)
+{
+    int32_t val = 10;
+    b.put(0, val);
+
+    BOOST_REQUIRE(b.get<int32_t>() == val);
+    BOOST_REQUIRE(b.get_pos() == 4);
+}
+
+BOOST_AUTO_TEST_CASE(test_get_float_advances_position)
+{
+    float val = 10.1f;
+    b.put(0, val);
+
+    BOOST_REQUIRE_EQUAL(b.get_f(), val);
+    BOOST_REQUIRE_EQUAL(b.get_pos(), 4);
+}
+
+BOOST_AUTO_TEST_CASE(test_get_double_advances_position)
 {
     double val = 10.1f;
     b.put(0, val);
 
-    BOOST_REQUIRE(b.get<double>(0) == val);
+    BOOST_REQUIRE_EQUAL(b.get_d(), val);
+    BOOST_REQUIRE_EQUAL(b.get_pos(), 8);
+}
+
+BOOST_AUTO_TEST_CASE(test_get_little_endian)
+{
+    int32_t i = edo::native_to_little(10);
+    b.put(0, i);
+    b.set_endianness(edo::endianness::little);
+
+    BOOST_REQUIRE_EQUAL(b.get<int32_t>(0), 10);
+}
+
+BOOST_AUTO_TEST_CASE(test_get_big_endian)
+{
+    int32_t i = edo::native_to_big(10);
+    b.put(0, i);
+    b.set_endianness(edo::endianness::big);
+
+    BOOST_REQUIRE_EQUAL(b.get<int32_t>(0), 10);
+}
+
+BOOST_AUTO_TEST_CASE(test_big_endian_float)
+{
+    float val = 10.1f;
+    b.set_endianness(edo::endianness::big);
+    b.put(0, val);
+
+    BOOST_REQUIRE_EQUAL(b.get_f(0), val);
+}
+
+BOOST_AUTO_TEST_CASE(test_big_endian_double)
+{
+    double val = 10.1f;
+    b.set_endianness(edo::endianness::big);
+    b.put(0, val);
+
+    BOOST_REQUIRE_EQUAL(b.get_d(0), val);
+}
+
+BOOST_AUTO_TEST_CASE(test_little_endian_float)
+{
+    float val = 10.1f;
+    b.set_endianness(edo::endianness::little);
+    b.put(0, val);
+
+    BOOST_REQUIRE_EQUAL(b.get_f(0), val);
+}
+
+BOOST_AUTO_TEST_CASE(test_little_endian_double)
+{
+    double val = 10.1f;
+    b.set_endianness(edo::endianness::little);
+    b.put(0, val);
+
+    BOOST_REQUIRE_EQUAL(b.get_d(0), val);
 }
 
 BOOST_AUTO_TEST_CASE(test_get_throws_when_exceeding_size)
 {
-    double val = 10.1f;
+    int32_t val = 10;
     b.put(0, val);
 
-    BOOST_REQUIRE_THROW(b.get<double>(1), std::out_of_range);
-}
-
-BOOST_AUTO_TEST_CASE(test_get_primitive_type_advances_position)
-{
-        double val = 10.1f;
-        b.put(0, val);
-
-        BOOST_REQUIRE(b.get<double>() == val);
-        BOOST_REQUIRE(b.get_pos() == 8);
+    BOOST_REQUIRE_THROW(b.get<int32_t>(1), std::out_of_range);
 }
 
 BOOST_AUTO_TEST_CASE(test_get_throws_when_index_less_than_zero)
 {
-    double val = 10.1f;
+    int32_t val = 10;
     b.put(0, val);
 
-    BOOST_REQUIRE_THROW(b.get<double>(-1), std::out_of_range);
+    BOOST_REQUIRE_THROW(b.get<int32_t>(-1), std::out_of_range);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

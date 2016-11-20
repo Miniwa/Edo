@@ -7,18 +7,36 @@
 #define PUT(type)\
 void edo::Bytebuf::put(const std::size_t index, const type value)\
 {\
-    put(index, reinterpret_cast<const byte*>(&value), sizeof(value));\
+    type aware_value = edo::native_to_order(value, order);\
+\
+    put(index, reinterpret_cast<const byte*>(\
+        &aware_value),\
+        sizeof(type)\
+    );\
 }\
 \
 void edo::Bytebuf::put(const type value)\
 {\
-    put(reinterpret_cast<const byte*>(&value), sizeof(value));\
+    type aware_value = edo::native_to_order(value, order);\
+\
+    put(reinterpret_cast<const byte*>(&aware_value), sizeof(type));\
 }\
 
 edo::Bytebuf::Bytebuf()
 {
     buffer = std::vector<byte>();
+    order = edo::endianness::native;
     position = 0;
+}
+
+void edo::Bytebuf::set_endianness(edo::endianness new_order)
+{
+    order = new_order;
+}
+
+edo::endianness edo::Bytebuf::get_endianness()
+{
+    return order;
 }
 
 std::size_t edo::Bytebuf::size()
@@ -112,6 +130,50 @@ PUT(uint32_t)
 
 PUT(uint64_t)
 
-PUT(float)
+void edo::Bytebuf::put(const std::size_t index, const float value)
+{
+    uint32_t serialized = *reinterpret_cast<const uint32_t*>(&value);
+    put(index, serialized);
+}
 
-PUT(double)
+void edo::Bytebuf::put(const float value)
+{
+    uint32_t serialized = *reinterpret_cast<const uint32_t*>(&value);
+    put(serialized);
+}
+
+void edo::Bytebuf::put(const std::size_t index, const double value)
+{
+    uint64_t serialized = *reinterpret_cast<const uint64_t*>(&value);
+    put(index, serialized);
+}
+
+void edo::Bytebuf::put(const double value)
+{
+    uint64_t serialized = *reinterpret_cast<const uint64_t*>(&value);
+    put(serialized);
+}
+
+float edo::Bytebuf::get_f(const std::size_t index)
+{
+    uint32_t serialized = get<uint32_t>(index);
+    return *reinterpret_cast<float*>(&serialized);
+}
+
+float edo::Bytebuf::get_f()
+{
+    uint32_t serialized = get<uint32_t>();
+    return *reinterpret_cast<float*>(&serialized);
+}
+
+double edo::Bytebuf::get_d(const std::size_t index)
+{
+    uint64_t serialized = get<uint64_t>(index);
+    return *reinterpret_cast<double*>(&serialized);
+}
+
+double edo::Bytebuf::get_d()
+{
+    uint64_t serialized = get<uint64_t>();
+    return *reinterpret_cast<double*>(&serialized);
+}
