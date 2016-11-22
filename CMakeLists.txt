@@ -10,6 +10,7 @@ set(LIBRARY_OUTPUT_PATH ${OUTPUT_PATH})
 set(CMAKE_CXX_STANDARD 11)
 
 include(CTest)
+include(GenerateExportHeader)
 
 # Platform specific stuff
 if(WIN32)
@@ -32,11 +33,17 @@ endif(${PROJECT_NAME}_BOOST_STATIC)
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
 # Expose include and library dirs
-set(${PROJECT_NAME}_INCLUDE_DIRS ${Boost_INCLUDE_DIRS}
+set(${PROJECT_NAME}_INCLUDE_DIRS ${Boost_INCLUDE_DIRS} ${OUTPUT_PATH}
 CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
 
 set(${PROJECT_NAME}_LIBRARY_DIRS ${Boost_LIBRARY_DIRS}
 CACHE INTERNAL "${PROJECT_NAME}: Library Directories" FORCE)
 
 add_subdirectory(edo-base)
+if(WIN32)
+    add_subdirectory(edo-ext)
+else(WIN32)
+    message("Skipped windows specific projects..")
+endif(WIN32)
+
 add_subdirectory(tests)

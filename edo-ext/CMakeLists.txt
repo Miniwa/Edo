@@ -10,7 +10,9 @@ CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
 include_directories(${edo-ext_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME} SHARED ${edo-ext_CPP} ${edo-ext_HPP})
-target_link_library(${PROJECT_NAME} edo-base)
+generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME
+"${OUTPUT_PATH}/ext_exports.hpp")
+target_link_libraries(${PROJECT_NAME} edo-base)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION "${edo_LIB_INSTALL_DIR}")
-install(FILES ${edo-ext_HPP} DESTINATION "${edo_HEADER_INSTALL_DIR}/ext")
+install(FILES ${edo-ext_HPP} ${OUTPUT_PATH}/ext_exports.hpp DESTINATION "${edo_HEADER_INSTALL_DIR}/ext")
