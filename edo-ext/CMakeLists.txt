@@ -1,0 +1,16 @@
+cmake_minimum_required(VERSION 3.1)
+project(edo-ext)
+
+file(GLOB edo-ext_CPP ${PROJECT_SOURCE_DIR}/src/*.cpp)
+file(GLOB edo-ext_HPP ${PROJECT_SOURCE_DIR}/include/*.hpp)
+
+set(edo-ext_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include ${edo-base_INCLUDE_DIRS}
+CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
+
+include_directories(${edo-ext_INCLUDE_DIRS})
+
+add_library(${PROJECT_NAME} SHARED ${edo-ext_CPP} ${edo-ext_HPP})
+target_link_library(${PROJECT_NAME} edo-base)
+
+install(TARGETS ${PROJECT_NAME} DESTINATION "${edo_LIB_INSTALL_DIR}")
+install(FILES ${edo-ext_HPP} DESTINATION "${edo_HEADER_INSTALL_DIR}/ext")
