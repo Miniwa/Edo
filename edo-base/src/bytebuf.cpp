@@ -22,16 +22,16 @@ void edo::Bytebuf::put(const type value)\
     put(reinterpret_cast<const byte*>(&aware_value), sizeof(type));\
 }\
 
-edo::Bytebuf::Bytebuf()
+edo::Bytebuf::Bytebuf() : Bytebuf(endianness::native)
 {
-    buffer = std::vector<byte>();
-    order = edo::endianness::native;
-    position = 0;
+
 }
 
-void edo::Bytebuf::set_endianness(edo::endianness new_order)
+edo::Bytebuf::Bytebuf(endianness order)
 {
-    order = new_order;
+    this->buffer = std::vector<byte>();
+    this->order = order;
+    this->position = 0;
 }
 
 edo::endianness edo::Bytebuf::get_endianness()

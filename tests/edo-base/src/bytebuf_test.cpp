@@ -7,9 +7,13 @@ struct BytebufFixture
     BytebufFixture()
     {
         b = edo::Bytebuf();
+        b_little = edo::Bytebuf(edo::endianness::little);
+        b_big = edo::Bytebuf(edo::endianness::big);
     }
 
     edo::Bytebuf b;
+    edo::Bytebuf b_little;
+    edo::Bytebuf b_big;
 };
 
 BOOST_FIXTURE_TEST_SUITE(bytebuf_tests, BytebufFixture)
@@ -21,10 +25,10 @@ BOOST_AUTO_TEST_CASE(test_constructor_defaults)
     BOOST_REQUIRE(b.get_endianness() == edo::endianness::native);
 }
 
-BOOST_AUTO_TEST_CASE(test_set_endianness_sets_correctly)
+BOOST_AUTO_TEST_CASE(test_endian_constructor)
 {
-    b.set_endianness(edo::endianness::big);
-    BOOST_REQUIRE(b.get_endianness() == edo::endianness::big);
+    BOOST_REQUIRE(b_little.get_endianness() == edo::endianness::little);
+    BOOST_REQUIRE(b_big.get_endianness() == edo::endianness::big);
 }
 
 BOOST_AUTO_TEST_CASE(test_reserve_reserves_proper_capacity)
@@ -219,20 +223,18 @@ BOOST_AUTO_TEST_CASE(test_put_with_double_advances_position)
 BOOST_AUTO_TEST_CASE(test_put_little_endian)
 {
     int32_t i = 100;
-    b.set_endianness(edo::endianness::little);
-    b.put(0, i);
+    b_little.put(0, i);
 
-    const int32_t* ptr = reinterpret_cast<const int32_t*>(b.data());
+    const int32_t* ptr = reinterpret_cast<const int32_t*>(b_little.data());
     BOOST_REQUIRE_EQUAL(*ptr, edo::native_to_little(i));
 }
 
 BOOST_AUTO_TEST_CASE(test_put_big_endian)
 {
     int32_t i = 100;
-    b.set_endianness(edo::endianness::big);
-    b.put(0, i);
+    b_big.put(0, i);
 
-    const int32_t* ptr = reinterpret_cast<const int32_t*>(b.data());
+    const int32_t* ptr = reinterpret_cast<const int32_t*>(b_big.data());
     BOOST_REQUIRE_EQUAL(*ptr, edo::native_to_big(i));
 }
 
@@ -273,56 +275,50 @@ BOOST_AUTO_TEST_CASE(test_get_double_advances_position)
 
 BOOST_AUTO_TEST_CASE(test_get_little_endian)
 {
-    int32_t i = edo::native_to_little(10);
-    b.put(0, i);
-    b.set_endianness(edo::endianness::little);
+    int32_t i = 10;
+    b_little.put(0, i);
 
-    BOOST_REQUIRE_EQUAL(b.get<int32_t>(0), 10);
+    BOOST_REQUIRE_EQUAL(b_little.get<int32_t>(0), 10);
 }
 
 BOOST_AUTO_TEST_CASE(test_get_big_endian)
 {
-    int32_t i = edo::native_to_big(10);
-    b.put(0, i);
-    b.set_endianness(edo::endianness::big);
+    int32_t i = 10;
+    b_big.put(0, i);
 
-    BOOST_REQUIRE_EQUAL(b.get<int32_t>(0), 10);
+    BOOST_REQUIRE_EQUAL(b_big.get<int32_t>(0), 10);
 }
 
 BOOST_AUTO_TEST_CASE(test_big_endian_float)
 {
     float val = 10.1f;
-    b.set_endianness(edo::endianness::big);
-    b.put(0, val);
+    b_big.put(0, val);
 
-    BOOST_REQUIRE_EQUAL(b.get_f(0), val);
+    BOOST_REQUIRE_EQUAL(b_big.get_f(0), val);
 }
 
 BOOST_AUTO_TEST_CASE(test_big_endian_double)
 {
     double val = 10.1f;
-    b.set_endianness(edo::endianness::big);
-    b.put(0, val);
+    b_big.put(0, val);
 
-    BOOST_REQUIRE_EQUAL(b.get_d(0), val);
+    BOOST_REQUIRE_EQUAL(b_big.get_d(0), val);
 }
 
 BOOST_AUTO_TEST_CASE(test_little_endian_float)
 {
     float val = 10.1f;
-    b.set_endianness(edo::endianness::little);
-    b.put(0, val);
+    b_little.put(0, val);
 
-    BOOST_REQUIRE_EQUAL(b.get_f(0), val);
+    BOOST_REQUIRE_EQUAL(b_little.get_f(0), val);
 }
 
 BOOST_AUTO_TEST_CASE(test_little_endian_double)
 {
     double val = 10.1f;
-    b.set_endianness(edo::endianness::little);
-    b.put(0, val);
+    b_little.put(0, val);
 
-    BOOST_REQUIRE_EQUAL(b.get_d(0), val);
+    BOOST_REQUIRE_EQUAL(b_little.get_d(0), val);
 }
 
 BOOST_AUTO_TEST_CASE(test_get_throws_when_exceeding_size)

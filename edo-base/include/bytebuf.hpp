@@ -21,11 +21,11 @@ namespace edo
         /// Default constructor
         Bytebuf();
 
-        /// Sets the endianness of the buffer
-        void set_endianness(edo::endianness order);
+        /// Endian constructor
+        Bytebuf(endianness order);
 
         /// Returns the endianness of the buffer
-        edo::endianness get_endianness();
+        endianness get_endianness();
 
         /// Returns the size of the buffer
         std::size_t size();
