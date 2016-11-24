@@ -37,6 +37,19 @@ BOOST_AUTO_TEST_CASE(test_reserve_reserves_proper_capacity)
     BOOST_REQUIRE(b.capacity() >= 100);
 }
 
+BOOST_AUTO_TEST_CASE(test_positive_resize_pads_bytes)
+{
+	b.resize(4);
+	BOOST_REQUIRE_EQUAL(b.size(), 4);
+}
+
+BOOST_AUTO_TEST_CASE(test_negative_resize_pads_bytes)
+{
+	b.put(400);
+	b.resize(1);
+	BOOST_REQUIRE_EQUAL(b.size(), 1);
+}
+
 BOOST_AUTO_TEST_CASE(test_pad_pads_correct_amount_of_bytes)
 {
 	b.pad(10);
