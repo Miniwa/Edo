@@ -54,6 +54,11 @@ void edo::Bytebuf::reserve(const std::size_t new_size)
     buffer.reserve(new_size);
 }
 
+void edo::Bytebuf::pad(const std::size_t byte_count)
+{
+	buffer.resize(buffer.size() + byte_count, NULL);
+}
+
 void edo::Bytebuf::clear()
 {
     buffer.clear();

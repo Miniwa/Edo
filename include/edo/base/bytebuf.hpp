@@ -37,6 +37,11 @@ namespace edo
         /// @param new_size The amount of elements to fit
         void reserve(const std::size_t new_size);
 
+		/// Pads the buffer with a given amount of bytes
+		/// These bytes are set to 0
+		/// @param byte_count The amount of bytes to pad
+		void pad(const std::size_t byte_count);
+
         /// Clears the buffer and rewinds the buffer position
         void clear();
 
