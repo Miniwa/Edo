@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-#include "types.hpp"
+#include "edo/base/types.hpp"
 
 #define EDO_ADDR(value) (reinterpret_cast<edo::memaddr>(&value))
 

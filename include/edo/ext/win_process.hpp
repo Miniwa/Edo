@@ -1,9 +1,9 @@
 #ifndef EDO_EXT_WIN_PROCESS_HPP
 #define EDO_EXT_WIN_PROCESS_HPP
 
-#include "types.hpp"
-#include "ext_exports.hpp"
-#include "process_info.hpp"
+#include "edo/base/types.hpp"
+#include "edo/ext/exports.hpp"
+#include "edo/ext/process_info.hpp"
 #include <vector>
 #include <string>
 

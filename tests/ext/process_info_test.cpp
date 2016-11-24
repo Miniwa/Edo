@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include "process_info.hpp"
+#include "edo/ext/process_info.hpp"
 
 BOOST_AUTO_TEST_SUITE(process_info_tests)
 

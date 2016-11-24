@@ -1,6 +1,6 @@
 #include <boost/test/unit_test.hpp>
 
-#include "bytebuf.hpp"
+#include "edo/base/bytebuf.hpp"
 
 struct BytebufFixture
 {

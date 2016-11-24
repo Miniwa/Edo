@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "types.hpp"
-#include "ext_exports.hpp"
+#include "edo/base/types.hpp"
+#include "edo/ext/exports.hpp"
 
 namespace edo
 {

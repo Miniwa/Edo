@@ -25,6 +25,7 @@ if(UNIX)
     set(${PROJECT_NAME}_BOOST_STATIC 0)
 endif(UNIX)
 
+
 # Handle static boost flag
 if(${PROJECT_NAME}_BOOST_STATIC)
     set(Boost_USE_STATIC_LIBS ON)
@@ -33,17 +34,15 @@ endif(${PROJECT_NAME}_BOOST_STATIC)
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
 # Expose include and library dirs
-set(${PROJECT_NAME}_INCLUDE_DIRS ${Boost_INCLUDE_DIRS} ${OUTPUT_PATH}
+set(${PROJECT_NAME}_INCLUDE_DIRS ${Boost_INCLUDE_DIRS} ${OUTPUT_PATH} ${PROJECT_SOURCE_DIR}/include
 CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
 
 set(${PROJECT_NAME}_LIBRARY_DIRS ${Boost_LIBRARY_DIRS}
 CACHE INTERNAL "${PROJECT_NAME}: Library Directories" FORCE)
 
-add_subdirectory(edo-base)
-if(WIN32)
-    add_subdirectory(edo-ext)
-else(WIN32)
-    message("Skipped windows specific projects..")
-endif(WIN32)
+file(GLOB edo_HPP ${PROJECT_SOURCE_DIR}/include)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/edo ${OUTPUT_PATH}/edo DESTINATION "include")
 
+
+add_subdirectory(src)
 add_subdirectory(tests)

@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.1)
 project(edo-ext-tests)
 
-file(GLOB edo-ext-tests_CPP ${PROJECT_SOURCE_DIR}/src/*.cpp)
+file(GLOB edo-ext-tests_CPP ${PROJECT_SOURCE_DIR}/*.cpp)
 
-include_directories(${edo_INCLUDE_DIRS} ${edo-ext_INCLUDE_DIRS})
+include_directories(${edo_INCLUDE_DIRS})
 link_directories(${edo_LIBRARY_DIRS})
 
 add_executable(edo-ext-tests ${edo-ext-tests_CPP})

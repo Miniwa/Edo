@@ -1,8 +1,8 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "misc.hpp"
-#include "configuration.hpp"
+#include "edo/base/misc.hpp"
+#include "edo/base/configuration.hpp"
 
 edo::ConfigMap::ConfigMap()
 {

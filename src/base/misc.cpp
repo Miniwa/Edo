@@ -1,5 +1,5 @@
 #include <sstream>
-#include "misc.hpp"
+#include "edo/base/misc.hpp"
 
 std::vector<std::string> edo::split(const std::string& str, const char delim)
 {

@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include "endian.hpp"
+#include "edo/base/endian.hpp"
 
 struct EndianFixture
 {

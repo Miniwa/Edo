@@ -1,7 +1,7 @@
 #include <stdexcept>
 #include <cstring>
 
-#include "bytebuf.hpp"
+#include "edo/base/bytebuf.hpp"
 
 // Helpers to define all put operations of basic types
 #define PUT(type)\

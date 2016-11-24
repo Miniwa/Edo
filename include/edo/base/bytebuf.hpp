@@ -3,9 +3,9 @@
 
 #include <vector>
 
-#include "types.hpp"
-#include "strings.hpp"
-#include "endian.hpp"
+#include "edo/base/types.hpp"
+#include "edo/base/strings.hpp"
+#include "edo/base/endian.hpp"
 
 namespace std
 {
