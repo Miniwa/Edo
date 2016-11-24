@@ -2,11 +2,10 @@
 #include <tlhelp32.h>
 #include <Aclapi.h>
 
-#include "win_process.hpp"
-#include "permission.hpp"
-#include "process_info.hpp"
-#include "error.hpp"
-
+#include "edo/base/error.hpp"
+#include "edo/ext/win_process.hpp"
+#include "edo/ext/permission.hpp"
+#include "edo/ext/process_info.hpp"
 
 edo::WinProcess::WinProcess()
 {
