@@ -3,6 +3,8 @@
 #include <Aclapi.h>
 
 #include "edo/base/error.hpp"
+#include "edo/base/strings.hpp"
+#include "edo/base/bytebuf.hpp"
 #include "edo/ext/win_process.hpp"
 #include "edo/ext/permission.hpp"
 #include "edo/ext/process_info.hpp"
@@ -11,6 +13,8 @@ edo::WinProcess::WinProcess()
 {
 	process_open = false;
 	process_handle = NULL;
+	process_info = ProcessInfo();
+	internal_buffer = Bytebuf();
 }
 
 std::vector<edo::ProcessInfo> edo::WinProcess::scan()
@@ -160,6 +164,117 @@ edo::memaddr edo::WinProcess::get_module_baseaddress(const std::string& module)
 	throw EdoError("A module that matches the target name could not be located");
 }
 
+bool edo::WinProcess::memread(
+	const memaddr address,
+	Bytebuf& buffer,
+	const std::size_t index,
+	const std::size_t byte_count
+)
+{
+	// Check if closed
+	throw_if_closed();
+
+	if (index < 0 || index > buffer.size())
+		throw std::out_of_range(INDEX_OUT_OF_RANGE);
+
+	if (address == NULL)
+		throw std::out_of_range(BAD_PTR);
+
+	SIZE_T bytes_read;
+	buffer.reserve(index + byte_count);
+	LPCVOID addr = *reinterpret_cast<const LPCVOID*>(&address);
+	auto ptr = buffer.data() + index;
+	LPVOID dest = *(LPVOID*)&ptr;
+
+	BOOL result = ReadProcessMemory(process_handle, addr, dest, byte_count, &bytes_read);
+
+	return result && bytes_read == byte_count;
+}
+
+void edo::WinProcess::safe_memread(
+	const memaddr address,
+	Bytebuf& buffer,
+	const std::size_t index,
+	const std::size_t byte_count
+)
+{
+	bool result = memread(address, buffer, index, byte_count);
+	if (!result)
+		throw EdoError(MEMOP_FAILED);
+}
+
+edo::Bytebuf edo::WinProcess::safe_memread(
+	const memaddr address,
+	const std::size_t byte_count
+)
+{
+	Bytebuf buffer;
+	buffer.reserve(byte_count);
+
+	bool result = memread(address, buffer, 0, byte_count);
+	if (!result)
+		throw EdoError(MEMOP_FAILED);
+
+	return buffer;
+}
+
+bool edo::WinProcess::memwrite(
+	const memaddr address,
+	Bytebuf& buffer,
+	const std::size_t index,
+	const std::size_t byte_count
+)
+{
+	// Check if closed
+	throw_if_closed();
+
+	if (index < 0 || index > buffer.size() || (index + byte_count) > buffer.size())
+		throw std::out_of_range(INDEX_OUT_OF_RANGE);
+
+	if (address == NULL)
+		throw std::out_of_range(BAD_PTR);
+
+	SIZE_T bytes_written;
+	LPVOID addr = *(LPVOID*)&address;
+	auto ptr = buffer.data() + index;
+	LPVOID source = *(LPVOID*)&ptr;
+
+	BOOL result = WriteProcessMemory(process_handle, addr, source, byte_count, &bytes_written);
+
+	return result && bytes_written == byte_count;
+}
+
+void edo::WinProcess::safe_memwrite(
+	const memaddr address,
+	Bytebuf& buffer,
+	const std::size_t index,
+	const std::size_t byte_count
+)
+{
+	bool result = memwrite(address, buffer, index, byte_count);
+	if (!result)
+		throw EdoError(MEMOP_FAILED);
+}
+
+edo::memaddr edo::WinProcess::follow(
+	const memaddr base,
+	std::vector<memoffset>::iterator begin,
+	std::vector<memoffset>::iterator end
+)
+{
+	// Check if closed
+	throw_if_closed();
+
+	memaddr result = base;
+
+	for (auto it = begin; it != end; it++)
+	{
+		safe_memread<memaddr>(result + *it, &result);
+	}
+
+	return result;
+}
+
 edo::hproc edo::WinProcess::open_secure_process(pid process_id, Permission perm)
 {
 	PACL pAcl;
@@ -168,7 +283,7 @@ edo::hproc edo::WinProcess::open_secure_process(pid process_id, Permission perm)
 	DWORD result;
 	DWORD access_mask = 0;
 
-	switch(perm)
+	switch (perm)
 	{
 		case Permission::read:
 			access_mask = PROCESS_VM_READ;
@@ -180,6 +295,7 @@ edo::hproc edo::WinProcess::open_secure_process(pid process_id, Permission perm)
 
 		case Permission::all:
 			access_mask = PROCESS_ALL_ACCESS;
+			break;
 	}
 
 	// Try to open the process normally.
@@ -228,11 +344,11 @@ edo::hproc edo::WinProcess::open_secure_process(pid process_id, Permission perm)
 void edo::WinProcess::throw_if_closed()
 {
 	if(!is_open())
-		throw EdoError("No process opened yet");
+		throw EdoError("No process has been opened yet");
 }
 
 void edo::WinProcess::throw_if_open()
 {
 	if (is_open())
-		throw EdoError("Process already open");
+		throw EdoError("A process is already open");
 }

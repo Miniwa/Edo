@@ -9,5 +9,7 @@ namespace edo
     #define MALFORMATTED_CONFIG_STR "The given configuration string is malformatted"
     #define NONEXISTANT_KEY "The given key does not exist"
     #define BAD_CAST "Could not cast value to given type"
+	#define BAD_PTR "An invalid pointer was given"
+	#define MEMOP_FAILED "Could not perform operation on memory"
 }
 #endif

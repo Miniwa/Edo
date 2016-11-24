@@ -2,6 +2,8 @@
 #define EDO_EXT_WIN_PROCESS_HPP
 
 #include "edo/base/types.hpp"
+#include "edo/base/strings.hpp"
+#include "edo/base/misc.hpp"
 #include "edo/ext/exports.hpp"
 #include "edo/ext/process_info.hpp"
 #include <vector>
@@ -49,51 +51,74 @@ namespace edo
         /// @throws EdoError If an unexpected error occurs
         memaddr get_module_baseaddress(const std::string& module);
 
-        /// Reads a given amount of bytes from given address into given buffer
+        /// Reads a given amount of bytes from given address into given buffer at given index
+		/// @throws out_of_range If index is out of range
         /// @returns True on success, false on error
         bool memread(
             const memaddr address,
-            const std::size_t byte_count,
-            Bytebuf& buffer
+			Bytebuf& buffer,
+			const std::size_t index,
+            const std::size_t byte_count
         );
 
         /// Reads an object of type T and places the result in given pointer
         /// @returns True on success, false on error
         template<typename T>
-        bool memread(
-            const memaddr address,
-            const T* result
-        );
+		bool memread(
+			const memaddr address,
+			T* out
+		)
+		{
+			internal_buffer.clear();
+			internal_buffer.reserve(sizeof(T));
+			bool result = memread(address, internal_buffer, 0, sizeof(T));
+			if (!result)
+				return false;
 
-        /// Reads a given amount of bytes into given buffer safely
+			// Set the out pointer
+			auto ptr = internal_buffer.data();
+			*out = *(T*)(ptr);
+
+			return true;
+		}
+
+        /// Reads a given amount of bytes into given buffer at given index safely
+		/// @throws out_of_range If index is out of range
         /// @throws EdoError If operation fails
         void safe_memread(
             const memaddr address,
-            const std::size_t byte_count,
-            Bytebuf& buffer
+			Bytebuf& buffer,
+			const std::size_t index,
+            const std::size_t byte_count
         );
 
         /// Reads an object of type T safely and places the result
         /// in given pointer
         /// @throws EdoError If operation fails
         template<typename T>
-        void safe_memread(
-            const memaddr address,
-            T* result
-        );
+		void safe_memread(
+			const memaddr address,
+			T* out
+		)
+		{
+			bool result = memread<T>(address, out);
+			if (!result)
+				throw EdoError(MEMOP_FAILED);
+		}
 
         /// Returns a buffer of given size read from given address safely
         /// @throws EdoError If operations fails
-        Bytebuf safe_memread(
-            const memaddr address,
-            const std::size_t byte_count
-        );
+		Bytebuf safe_memread(
+			const memaddr address,
+			const std::size_t byte_count
+		);
 
         /// Writes a given amount of bytes to given address
         /// @param address The address to write to
         /// @param buffer The buffer to read from
         /// @param index The index in the buffer to read from
         /// @param byte_count The amount of bytes to write
+		/// @throws out_of_range If index is out of range
         /// @returns True on success, false on error
         bool memwrite(
             const memaddr address,
@@ -105,16 +130,23 @@ namespace edo
         /// Writes an object of type T to given address
         /// @returns True on success, false on error
         template<typename T>
-        bool memwrite(
-            const memaddr address,
-            const T& obj
-        );
+		bool memwrite(
+			const memaddr address,
+			const T* obj
+		)
+		{
+			internal_buffer.clear();
+			internal_buffer.put(0, *reinterpret_cast<byte**>(&obj), sizeof(T));
+
+			return memwrite(address, internal_buffer, 0, sizeof(T));
+		}
 
         /// Writes a given amount of bytes to given address safely
         /// @param address The address to write to
         /// @param buffer The buffer to read from
         /// @param index The index in the buffer to read from
         /// @param byte_count The amount of bytes to write
+		/// @throws out_of_range If index is out of range
         /// @throws EdoError If operation fails
         void safe_memwrite(
             const memaddr address,
@@ -126,12 +158,18 @@ namespace edo
         /// Writes an object of type T to given address
         /// @throws EdoError If operations fails
         template<typename T>
-        void safe_memwrite(
-            const memaddr address,
-            const T& obj
-        );
+		void safe_memwrite(
+			const memaddr address,
+			const T* obj
+		)
+		{
+			bool result = memwrite<T>(address, obj);
+			if (!result)
+				throw EdoError(MEMOP_FAILED);
+		}
 
         /// Follows an address in the target process
+		/// AKA offsets a pointer
         /// @see edo::follow
         memaddr follow(
             const memaddr base,
@@ -147,6 +185,7 @@ namespace edo
 			bool process_open;
 			hproc process_handle;
 			ProcessInfo process_info;
+			Bytebuf internal_buffer;
     };
 }
 #endif

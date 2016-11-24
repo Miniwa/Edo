@@ -2,10 +2,11 @@ cmake_minimum_required(VERSION 3.1)
 project(edo-ext)
 
 file(GLOB edo-ext_CPP ${PROJECT_SOURCE_DIR}/*.cpp)
+file(GLOB edo-ext_HPP ${edo_HEADER_DIR}/edo/ext/*.hpp ${OUTPUT_PATH}/edo/ext/exports.hpp)
 
 include_directories(${edo_INCLUDE_DIRS})
 
-add_library(${PROJECT_NAME} SHARED ${edo-ext_CPP})
+add_library(${PROJECT_NAME} SHARED ${edo-ext_CPP} ${edo-ext_HPP})
 generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME
 "${OUTPUT_PATH}/edo/ext/exports.hpp")
 target_link_libraries(${PROJECT_NAME} edo-base)
