@@ -1,5 +1,10 @@
 #include "process_info.hpp"
 
+edo::ProcessInfo::ProcessInfo() : ProcessInfo("", 0, 0, 0)
+{
+
+}
+
 edo::ProcessInfo::ProcessInfo(
     const std::string& name,
     const pid process_id,

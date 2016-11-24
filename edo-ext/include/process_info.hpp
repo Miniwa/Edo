@@ -4,12 +4,16 @@
 #include <string>
 
 #include "types.hpp"
+#include "ext_exports.hpp"
 
 namespace edo
 {
-    struct ProcessInfo
+    struct EDO_EXT_EXPORT ProcessInfo
     {
         /// Default constructor
+		ProcessInfo();
+
+		/// Info constructor
         ProcessInfo(
             const std::string& name,
             const pid process_id,

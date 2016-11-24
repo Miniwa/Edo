@@ -2,22 +2,19 @@
 #define EDO_EXT_WIN_PROCESS_HPP
 
 #include "types.hpp"
+#include "ext_exports.hpp"
+#include "process_info.hpp"
 #include <vector>
-
-namespace std
-{
-    class string;
-}
+#include <string>
 
 namespace edo
 {
     // Forward declare
-    struct ProcessInfo;
     class Bytebuf;
     enum class Permission;
 
     /// A windows process wrapper and API
-    class WinProcess
+    class EDO_EXT_EXPORT WinProcess
     {
     public:
         /// Default constructor
@@ -141,6 +138,15 @@ namespace edo
             std::vector<memoffset>::iterator begin,
             std::vector<memoffset>::iterator end
         );
+
+		private:
+			hproc open_secure_process(pid process_id, Permission perm);
+			void throw_if_closed();
+			void throw_if_open();
+
+			bool process_open;
+			hproc process_handle;
+			ProcessInfo process_info;
     };
 }
 #endif
