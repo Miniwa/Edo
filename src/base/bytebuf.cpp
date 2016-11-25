@@ -56,12 +56,12 @@ void edo::Bytebuf::reserve(const std::size_t new_size)
 
 void edo::Bytebuf::resize(const std::size_t new_size)
 {
-	buffer.resize(new_size, NULL);
+	buffer.resize(new_size, 0);
 }
 
 void edo::Bytebuf::pad(const std::size_t byte_count)
 {
-	buffer.resize(buffer.size() + byte_count, NULL);
+	buffer.resize(buffer.size() + byte_count, 0);
 }
 
 void edo::Bytebuf::clear()
@@ -166,24 +166,24 @@ void edo::Bytebuf::put(const double value)
 
 float edo::Bytebuf::get_f(const std::size_t index)
 {
-    uint32_t serialized = get<uint32_t>(index);
+    uint32_t serialized = get_n<uint32_t>(index);
     return *reinterpret_cast<float*>(&serialized);
 }
 
 float edo::Bytebuf::get_f()
 {
-    uint32_t serialized = get<uint32_t>();
+    uint32_t serialized = get_n<uint32_t>();
     return *reinterpret_cast<float*>(&serialized);
 }
 
 double edo::Bytebuf::get_d(const std::size_t index)
 {
-    uint64_t serialized = get<uint64_t>(index);
+    uint64_t serialized = get_n<uint64_t>(index);
     return *reinterpret_cast<double*>(&serialized);
 }
 
 double edo::Bytebuf::get_d()
 {
-    uint64_t serialized = get<uint64_t>();
+    uint64_t serialized = get_n<uint64_t>();
     return *reinterpret_cast<double*>(&serialized);
 }

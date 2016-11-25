@@ -188,6 +188,24 @@ BOOST_AUTO_TEST_CASE(test_put_vector_of_bytes_moves_position)
     BOOST_REQUIRE(b.get_pos() == 2);
 }
 
+BOOST_AUTO_TEST_CASE(test_put_t)
+{
+    uint32_t i = 100;
+    b.put<uint32_t>(0, &i);
+
+    BOOST_REQUIRE_EQUAL(b.get<uint32_t>(0), i);
+}
+
+BOOST_AUTO_TEST_CASE(test_put_t_advances_position)
+{
+    uint32_t i = 100;
+    b.put<uint32_t>(&i);
+
+    BOOST_REQUIRE_EQUAL(b.get_pos(), sizeof(uint32_t));
+    b.set_pos(0);
+    BOOST_REQUIRE_EQUAL(b.get<uint32_t>(), i);
+}
+
 BOOST_AUTO_TEST_CASE(test_put_generated_type)
 {
     uint64_t i = 10;
@@ -304,20 +322,20 @@ BOOST_AUTO_TEST_CASE(test_get_double_advances_position)
     BOOST_REQUIRE_EQUAL(b.get_pos(), 8);
 }
 
-BOOST_AUTO_TEST_CASE(test_get_little_endian)
+BOOST_AUTO_TEST_CASE(test_get_number_little_endian)
 {
     int32_t i = 10;
     b_little.put(0, i);
 
-    BOOST_REQUIRE_EQUAL(b_little.get<int32_t>(0), 10);
+    BOOST_REQUIRE_EQUAL(b_little.get_n<int32_t>(0), 10);
 }
 
-BOOST_AUTO_TEST_CASE(test_get_big_endian)
+BOOST_AUTO_TEST_CASE(test_get_number_big_endian)
 {
     int32_t i = 10;
     b_big.put(0, i);
 
-    BOOST_REQUIRE_EQUAL(b_big.get<int32_t>(0), 10);
+    BOOST_REQUIRE_EQUAL(b_big.get_n<int32_t>(0), 10);
 }
 
 BOOST_AUTO_TEST_CASE(test_big_endian_float)

@@ -89,6 +89,21 @@ namespace edo
         void put(const std::size_t index, const std::vector<byte>& data);
         void put(const std::vector<byte>& data);
 
+        /// Appends an object of type T to buffer at given index
+        template<typename T>
+        void put(const std::size_t index, const T* object)
+        {
+                put(index, reinterpret_cast<const byte*>(object), sizeof(T));
+        }
+
+        /// Appends an object of type T to buffer and advances the buffer
+        /// by sizeof(T) bytes
+        template<typename T>
+        void put(const T* object)
+        {
+            put(reinterpret_cast<const byte*>(object), sizeof(T));
+        }
+
         void put(const std::size_t index, const int8_t value);
         void put(const int8_t value);
 
@@ -122,20 +137,50 @@ namespace edo
         /// Gets an object of type T from given index
         /// @param index The index of where to get from
         /// @throws out_of_range If requested type is too large
+        /// @throws out_of_range If index is out of range
         template<typename T>
         T get(const std::size_t index)
         {
-            T val = internal_get<T>(index);
-            return edo::order_to_native(val, order);
+            if(index < 0 || index > size())
+                throw std::out_of_range(INDEX_OUT_OF_RANGE);
+
+            std::size_t type_size = sizeof(T);
+            if(index + type_size > size())
+                throw std::out_of_range(OPERATION_EXCEEDS_SIZE);
+
+            return *(T*)&buffer[index];
         }
 
         /// Gets an object of type T from the buffer and advances the buffer
         /// position by sizeof(T) bytes
         /// @throws out_of_range If requested type is too large
+        /// @throws out_of_range If index is out of range
         template<typename T>
         T get()
         {
-            T val = internal_get<T>();
+            T res = get<T>(get_pos());
+            move(sizeof(T));
+
+            return res;
+        }
+
+        /// Gets a number of type T from buffer, takes endianness into account
+        /// @param index The index of where to get from
+        /// @throws out_of_range If requested type is too large
+        template<typename T>
+        T get_n(const std::size_t index)
+        {
+            T val = get<T>(index);
+            return edo::order_to_native(val, order);
+        }
+
+        /// Gets a number of type T from buffer, takes endianness into account
+        /// position by sizeof(T) bytes
+        /// @throws out_of_range If requested type is too large
+        template<typename T>
+        T get_n()
+        {
+            T val = get<T>();
             return edo::order_to_native(val, order);
         }
 
@@ -154,28 +199,6 @@ namespace edo
         double get_d();
 
     private:
-        template<typename T>
-        T internal_get(const std::size_t index)
-        {
-            if(index < 0 || index > size())
-                throw std::out_of_range(INDEX_OUT_OF_RANGE);
-
-            std::size_t type_size = sizeof(T);
-            if(index + type_size > size())
-                throw std::out_of_range(OPERATION_EXCEEDS_SIZE);
-
-            return *(T*)&buffer[index];
-        }
-
-        template<typename T>
-        T internal_get()
-        {
-            T res = internal_get<T>(get_pos());
-            move(sizeof(T));
-
-            return res;
-        }
-
         std::vector<byte> buffer;
         edo::endianness order;
         std::size_t position;
