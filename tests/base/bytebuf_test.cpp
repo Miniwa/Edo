@@ -229,7 +229,7 @@ BOOST_AUTO_TEST_CASE(test_put_with_generated_type_moves_position)
 
 BOOST_AUTO_TEST_CASE(test_put_get_with_float)
 {
-    float i = 10.1;
+    float i = 10.1f;
     b.put(0, i);
 
     BOOST_REQUIRE_EQUAL(sizeof(float), sizeof(uint32_t));
@@ -240,7 +240,7 @@ BOOST_AUTO_TEST_CASE(test_put_get_with_float)
 
 BOOST_AUTO_TEST_CASE(test_put_with_float_moves_position)
 {
-    float i = 10.1;
+    float i = 10.1f;
     b.put(i);
 
     BOOST_REQUIRE_EQUAL(b.size(), 4);

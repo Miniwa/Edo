@@ -52,7 +52,7 @@ namespace edo
             {
                 return boost::lexical_cast<T>(val);
             }
-            catch(const boost::bad_lexical_cast& e)
+            catch(const boost::bad_lexical_cast&)
             {
                 //Just raise runtime error instead
                 throw std::runtime_error(BAD_CAST);
@@ -75,7 +75,7 @@ namespace edo
             {
                 val = boost::lexical_cast<std::string>(value);
             }
-            catch(const boost::bad_lexical_cast& e)
+            catch(const boost::bad_lexical_cast&)
             {
                 //Raise runtime error
                 throw std::runtime_error(BAD_CAST);

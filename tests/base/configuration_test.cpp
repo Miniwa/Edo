@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE(test_put_lex_with_int)
 
 BOOST_AUTO_TEST_CASE(test_put_lex_with_float)
 {
-    conf.put<float>("fps", 60.0023);
+    conf.put<float>("fps", 60.0023f);
     BOOST_REQUIRE_EQUAL(conf.get("fps"), "60.0023003");
 }
 
