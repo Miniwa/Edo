@@ -77,6 +77,7 @@ void edo::WinProcess::open(const pid process_id, const Permission perm)
 		{
 			// Copy
 			pi = *it;
+			break;
 		}
 	}
 
@@ -125,7 +126,7 @@ void edo::WinProcess::close()
 
 edo::memaddr edo::WinProcess::get_baseaddress()
 {
-	return get_module_baseaddress(process_info.exe_name);
+	return get_module_baseaddress(process_info.get_name());
 }
 
 edo::memaddr edo::WinProcess::get_module_baseaddress(const std::string& module)
@@ -180,8 +181,12 @@ bool edo::WinProcess::memread(
 	if (address == NULL)
 		throw std::out_of_range(BAD_PTR);
 
+	// Make sure buffer size can fit the new bytes
+	int32_t diff = (index + byte_count) - buffer.size();
+	if (diff > 0)
+		buffer.pad(diff);
+
 	SIZE_T bytes_read;
-	buffer.reserve(index + byte_count);
 	LPCVOID addr = *reinterpret_cast<const LPCVOID*>(&address);
 	auto ptr = buffer.data() + index;
 	LPVOID dest = *(LPVOID*)&ptr;
@@ -209,7 +214,7 @@ edo::Bytebuf edo::WinProcess::safe_memread(
 )
 {
 	Bytebuf buffer;
-	buffer.reserve(byte_count);
+	buffer.resize(byte_count);
 
 	bool result = memread(address, buffer, 0, byte_count);
 	if (!result)

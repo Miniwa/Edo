@@ -12,8 +12,13 @@ edo::ProcessInfo::ProcessInfo(
     const uint32_t threads
 )
 {
-    this->exe_name = name;
+	this->exe_name = name;
     this->process_id = process_id;
     this->parent_process_id = parent;
     this->thread_count = threads;
+}
+
+std::string edo::ProcessInfo::get_name()
+{
+	return exe_name;
 }

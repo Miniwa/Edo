@@ -8,8 +8,9 @@
 
 namespace edo
 {
-    struct EDO_EXT_EXPORT ProcessInfo
+    class EDO_EXT_EXPORT ProcessInfo
     {
+	public:
         /// Default constructor
 		ProcessInfo();
 
@@ -21,8 +22,8 @@ namespace edo
             const uint32_t threads
         );
 
-        /// The name of the .exe that started this process
-        std::string exe_name;
+        /// Returns the name of the .exe that started this process
+		std::string get_name();
 
         /// The process identifier of the process
         pid process_id;
@@ -32,6 +33,9 @@ namespace edo
 
         /// The number of threads in this process
         uint32_t thread_count;
+
+	private:
+		std::string exe_name;
     };
 }
 #endif

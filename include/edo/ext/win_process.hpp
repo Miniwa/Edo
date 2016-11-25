@@ -4,6 +4,7 @@
 #include "edo/base/types.hpp"
 #include "edo/base/strings.hpp"
 #include "edo/base/misc.hpp"
+#include "edo/base/bytebuf.hpp"
 #include "edo/ext/exports.hpp"
 #include "edo/ext/process_info.hpp"
 #include <vector>
@@ -12,7 +13,6 @@
 namespace edo
 {
     // Forward declare
-    class Bytebuf;
     enum class Permission;
 
     /// A windows process wrapper and API
@@ -70,7 +70,6 @@ namespace edo
 		)
 		{
 			internal_buffer.clear();
-			internal_buffer.reserve(sizeof(T));
 			bool result = memread(address, internal_buffer, 0, sizeof(T));
 			if (!result)
 				return false;
@@ -136,7 +135,7 @@ namespace edo
 		)
 		{
 			internal_buffer.clear();
-			internal_buffer.put(0, *reinterpret_cast<byte**>(&obj), sizeof(T));
+			internal_buffer.put(0, (byte*)(obj), sizeof(T));
 
 			return memwrite(address, internal_buffer, 0, sizeof(T));
 		}
