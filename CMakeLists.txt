@@ -16,12 +16,13 @@ set(CMAKE_DEBUG_POSTFIX -d)
 
 # Platform specific stuff
 if(WIN32)
-    set(VER_APPENDIX "-${edo_VERSION_MAJOR}.${edo_VERSION_MINOR}")
+    set(${PROJECT_NAME}_HEADERS ${PROJECT_SOURCE_DIR}/include/edo ${OUTPUT_PATH}/edo)
     set(${PROJECT_NAME}_LIB_INSTALL_DIR "lib")
     set(${PROJECT_NAME}_HEADER_INSTALL_DIR "include/edo")
     set(${PROJECT_NAME}_BOOST_STATIC ON)
 endif(WIN32)
 if(UNIX)
+    set(${PROJECT_NAME}_HEADERS ${PROJECT_SOURCE_DIR}/include/edo)
     set(${PROJECT_NAME}_LIB_INSTALL_DIR "lib")
     set(${PROJECT_NAME}_HEADER_INSTALL_DIR "include/edo")
     set(${PROJECT_NAME}_BOOST_STATIC 0)
@@ -42,9 +43,8 @@ CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
 set(${PROJECT_NAME}_LIBRARY_DIRS ${Boost_LIBRARY_DIRS}
 CACHE INTERNAL "${PROJECT_NAME}: Library Directories" FORCE)
 
-# Install and expose headers
-file(GLOB edo_HPP ${PROJECT_SOURCE_DIR}/include)
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/edo ${OUTPUT_PATH}/edo DESTINATION "include")
+# Install edo headers
+install(DIRECTORY ${${PROJECT_NAME}_HEADERS} DESTINATION "include")
 
 add_subdirectory(src)
 add_subdirectory(tests)
