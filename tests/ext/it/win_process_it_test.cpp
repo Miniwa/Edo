@@ -12,11 +12,18 @@ struct WinProcessClosedFixture
 		proc = edo::WinProcess();
 		invalid_pid = -1;
 		current_pid = GetCurrentProcessId();
+
+		#ifdef _DEBUG
+		dll_name = "edo-ext-d.dll";
+		#else
+		dll_name = "edo-ext.dll";
+		#endif
 	}
 
 	edo::WinProcess proc;
 	edo::pid invalid_pid;
 	edo::pid current_pid;
+	std::string dll_name;
 };
 
 struct MemFixture
@@ -78,7 +85,7 @@ BOOST_FIXTURE_TEST_CASE(test_open_process_with_invalid_pid, WinProcessClosedFixt
 BOOST_FIXTURE_TEST_CASE(test_get_process_module_base_address_closed, WinProcessClosedFixture)
 {
 	BOOST_REQUIRE_THROW(proc.get_baseaddress(), edo::EdoError);
-	BOOST_REQUIRE_THROW(proc.get_module_baseaddress("edo-ext.dll"), edo::EdoError);
+	BOOST_REQUIRE_THROW(proc.get_module_baseaddress(dll_name), edo::EdoError);
 }
 
 BOOST_FIXTURE_TEST_CASE(test_get_process_module_address, WinProcessClosedFixture)
@@ -87,11 +94,11 @@ BOOST_FIXTURE_TEST_CASE(test_get_process_module_address, WinProcessClosedFixture
 
 	// Fetch from system under test
 	edo::memaddr base = proc.get_baseaddress();
-	edo::memaddr ext_dll = proc.get_module_baseaddress("edo-ext.dll");
+	edo::memaddr ext_dll = proc.get_module_baseaddress(dll_name);
 
 	// Get the baseaddress from the windows api
 	HMODULE base_winapi = GetModuleHandle(NULL);
-	HMODULE ext_dll_winapi = GetModuleHandle("edo-ext.dll");
+	HMODULE ext_dll_winapi = GetModuleHandle(dll_name.c_str());
 	edo::memaddr base_casted = *reinterpret_cast<edo::memaddr*>(&base_winapi);
 	edo::memaddr ext_dll_casted = *reinterpret_cast<edo::memaddr*>(&ext_dll_winapi);
 

@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 include(CTest)
 include(GenerateExportHeader)
+set(CMAKE_DEBUG_POSTFIX -d)
 
 # Platform specific stuff
 if(WIN32)
@@ -41,9 +42,9 @@ CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
 set(${PROJECT_NAME}_LIBRARY_DIRS ${Boost_LIBRARY_DIRS}
 CACHE INTERNAL "${PROJECT_NAME}: Library Directories" FORCE)
 
+# Install and expose headers
 file(GLOB edo_HPP ${PROJECT_SOURCE_DIR}/include)
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/edo ${OUTPUT_PATH}/edo DESTINATION "include")
-
 
 add_subdirectory(src)
 add_subdirectory(tests)
