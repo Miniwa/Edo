@@ -7,9 +7,9 @@ namespace edo
 {
     enum class endianness
     {
-        big = boost::endian::order::big,
-        little = boost::endian::order::little,
-        native = boost::endian::order::native,
+        big = (int)boost::endian::order::big,
+        little = (int)boost::endian::order::little,
+        native = (int)boost::endian::order::native,
     };
 
     /// Returns the big-endian representation of a given native value
