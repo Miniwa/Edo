@@ -32,6 +32,8 @@ find_path(Edo_INCLUDE_DIR edo/base/types.hpp
 if(NOT Edo_INCLUDE_DIR)
     set(Edo_FOUND FALSE)
     set(FIND_Edo_ERROR "Edo include directory could not be located")
+else()
+    set(Edo_INCLUDE_DIR ${Edo_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
 endif()
 
 
