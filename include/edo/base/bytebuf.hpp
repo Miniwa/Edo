@@ -141,7 +141,7 @@ namespace edo
         template<typename T>
         T get(const std::size_t index)
         {
-            if(index < 0 || index > size())
+            if(index > size())
                 throw std::out_of_range(INDEX_OUT_OF_RANGE);
 
             std::size_t type_size = sizeof(T);
