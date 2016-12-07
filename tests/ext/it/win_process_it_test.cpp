@@ -53,6 +53,12 @@ BOOST_FIXTURE_TEST_CASE(test_constructor_defaults, WinProcessClosedFixture)
 	BOOST_REQUIRE_EQUAL(proc.is_open(), false);
 }
 
+BOOST_FIXTURE_TEST_CASE(test_constructor_copy_when_open, MemFixture)
+{
+	edo::WinProcess duplicated;
+	duplicated = proc;
+}
+
 BOOST_AUTO_TEST_CASE(test_scan_finds_current_process)
 {
 	auto result = edo::WinProcess::scan();

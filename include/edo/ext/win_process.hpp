@@ -192,6 +192,7 @@ namespace edo
 
 		private:
 			void construct_default();
+			void copy(WinProcess& right);
 			hproc open_secure_process(pid process_id, Permission perm);
 			void throw_if_closed();
 			void throw_if_open();

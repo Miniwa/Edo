@@ -22,22 +22,14 @@ edo::WinProcess::~WinProcess()
 
 edo::WinProcess::WinProcess(const WinProcess& right)
 {
-	*this = right;
+	WinProcess& right_real = const_cast<WinProcess&>(right);
+	copy(right_real);
 }
 
 void edo::WinProcess::operator=(const WinProcess right)
 {
-	// TODO: Fix const correctness on classes in general
 	WinProcess& right_real = const_cast<WinProcess&>(right);
-	if (right_real.is_open())
-	{
-		process_open = true;
-		process_info = right_real.process_info;
-		process_handle = right_real.get_handle();
-		internal_buffer = Bytebuf();
-	}
-	else
-		construct_default();
+	copy(right_real);
 }
 
 std::vector<edo::ProcessInfo> edo::WinProcess::scan()
@@ -323,6 +315,21 @@ void edo::WinProcess::construct_default()
 	process_handle = NULL;
 	process_info = ProcessInfo();
 	internal_buffer = Bytebuf();
+}
+
+void edo::WinProcess::copy(WinProcess& right)
+{
+	// TODO: Fix const correctness on classes in general
+	WinProcess& right_real = const_cast<WinProcess&>(right);
+	if (right_real.is_open())
+	{
+		process_open = true;
+		process_info = right_real.process_info;
+		process_handle = right_real.get_handle();
+		internal_buffer = Bytebuf();
+	}
+	else
+		construct_default();
 }
 
 edo::hproc edo::WinProcess::open_secure_process(pid process_id, Permission perm)
