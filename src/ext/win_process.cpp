@@ -11,10 +11,33 @@
 
 edo::WinProcess::WinProcess()
 {
-	process_open = false;
-	process_handle = NULL;
-	process_info = ProcessInfo();
-	internal_buffer = Bytebuf();
+	construct_default();
+}
+
+edo::WinProcess::~WinProcess()
+{
+	if(is_open())
+		close();
+}
+
+edo::WinProcess::WinProcess(const WinProcess& right)
+{
+	*this = right;
+}
+
+void edo::WinProcess::operator=(const WinProcess right)
+{
+	// TODO: Fix const correctness on classes in general
+	WinProcess& right_real = const_cast<WinProcess&>(right);
+	if (right_real.is_open())
+	{
+		process_open = true;
+		process_info = right_real.process_info;
+		process_handle = right_real.get_handle();
+		internal_buffer = Bytebuf();
+	}
+	else
+		construct_default();
 }
 
 std::vector<edo::ProcessInfo> edo::WinProcess::scan()
@@ -122,6 +145,20 @@ void edo::WinProcess::close()
 		process_handle = NULL;
 		process_open = false;
 	}
+}
+
+edo::hproc edo::WinProcess::get_handle()
+{
+	throw_if_closed();
+
+	HANDLE currentProcess = GetCurrentProcess();
+	HANDLE duplicated = NULL;
+
+	BOOL res = DuplicateHandle(currentProcess, process_handle, currentProcess, &duplicated, 0, FALSE, DUPLICATE_SAME_ACCESS);
+	if (!res)
+		throw edo::EdoError("Could not duplicate handle");
+
+	return duplicated;
 }
 
 edo::memaddr edo::WinProcess::get_baseaddress()
@@ -278,6 +315,14 @@ edo::memaddr edo::WinProcess::follow(
 	}
 
 	return result;
+}
+
+void edo::WinProcess::construct_default()
+{
+	process_open = false;
+	process_handle = NULL;
+	process_info = ProcessInfo();
+	internal_buffer = Bytebuf();
 }
 
 edo::hproc edo::WinProcess::open_secure_process(pid process_id, Permission perm)

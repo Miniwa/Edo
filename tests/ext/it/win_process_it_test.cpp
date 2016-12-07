@@ -82,6 +82,19 @@ BOOST_FIXTURE_TEST_CASE(test_open_process_with_invalid_pid, WinProcessClosedFixt
 	BOOST_REQUIRE_THROW(proc.open(invalid_pid, edo::Permission::all), edo::EdoError);
 }
 
+BOOST_FIXTURE_TEST_CASE(test_get_handle_closed, WinProcessClosedFixture)
+{
+	BOOST_REQUIRE_THROW(proc.get_handle(), edo::EdoError);
+}
+
+BOOST_FIXTURE_TEST_CASE(test_get_handle_destructiveness, MemFixture)
+{
+	edo::hproc first = proc.get_handle();
+	edo::hproc second = proc.get_handle();
+
+	BOOST_REQUIRE_NE(first, second);
+}
+
 BOOST_FIXTURE_TEST_CASE(test_get_process_module_base_address_closed, WinProcessClosedFixture)
 {
 	BOOST_REQUIRE_THROW(proc.get_baseaddress(), edo::EdoError);

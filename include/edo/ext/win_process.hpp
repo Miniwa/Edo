@@ -22,6 +22,16 @@ namespace edo
         /// Default constructor
         WinProcess();
 
+		/// Default destructor
+		/// Closes any open handles
+		~WinProcess();
+
+		/// Copy constructor
+		WinProcess(const WinProcess& right);
+
+		/// Copy assignment
+		void operator=(const WinProcess right);
+
         /// Returns a list of all accessable processes currently running
         /// @throws SecurityError If you do not have permission to scan
         /// @throws EdoError If an unexpected error occurs
@@ -41,6 +51,10 @@ namespace edo
         /// Closes the currently open process
         /// Does nothing if no process is open
         void close();
+
+		/// Returns a duplicated handle to the process
+		/// @throws EdoError If process handle cannot be duplicated
+		hproc get_handle();
 
         /// Returns the baseaddress of the process
         memaddr get_baseaddress();
@@ -177,6 +191,7 @@ namespace edo
         );
 
 		private:
+			void construct_default();
 			hproc open_secure_process(pid process_id, Permission perm);
 			void throw_if_closed();
 			void throw_if_open();
