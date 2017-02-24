@@ -14,7 +14,7 @@ namespace std
 
 namespace edo
 {
-    /// A endian aware buffer of bytes
+    /// An endian aware buffer of bytes
     class Bytebuf
     {
     public:
