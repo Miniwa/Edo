@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 3.1)
 project(edo-tests)
 
-if(NOT edo_BOOST_STATIC)
-    add_definitions(-DBOOST_TEST_DYN_LINK)
-endif(NOT edo_BOOST_STATIC)
+# Include and library dirs
+include_directories(${EDO_HEADER_DIR} ${Boost_INCLUDE_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
 
-add_subdirectory(base)
+# Gather sources
+file(GLOB EDO_TEST_CPP ${PROJECT_SOURCE_DIR}/**/*.cpp)
+
+# Add test executable and link it to edo and boost test
+add_executable(edo-tests ${EDO_TEST_CPP})
+target_link_libraries(edo-tests edo ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+add_test(edo-tests ${OUTPUT_PATH}/edo-tests)
