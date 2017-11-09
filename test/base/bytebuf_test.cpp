@@ -16,7 +16,7 @@ struct BytebufFixture
     edo::Bytebuf b_big;
 };
 
-BOOST_FIXTURE_TEST_SUITE(bytebuf_tests, BytebufFixture)
+BOOST_FIXTURE_TEST_SUITE(bytebuf_test, BytebufFixture)
 
 BOOST_AUTO_TEST_CASE(test_constructor_defaults)
 {

@@ -13,7 +13,7 @@ struct ConfigurationFixture
     edo::ConfigMap conf;
 };
 
-BOOST_FIXTURE_TEST_SUITE(configuration_tests, ConfigurationFixture)
+BOOST_FIXTURE_TEST_SUITE(configuration_test, ConfigurationFixture)
 
 BOOST_AUTO_TEST_CASE(test_parse_adds_all_keys)
 {

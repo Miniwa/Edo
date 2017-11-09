@@ -15,7 +15,7 @@ struct EndianFixture
     uint32_t native_i;
 };
 
-BOOST_FIXTURE_TEST_SUITE(endian_tests, EndianFixture)
+BOOST_FIXTURE_TEST_SUITE(endian_test, EndianFixture)
 
 BOOST_AUTO_TEST_CASE(test_endianness_enum)
 {

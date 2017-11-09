@@ -36,4 +36,4 @@ install(DIRECTORY ${EDO_HEADER_DIR} DESTINATION "${EDO_HEADER_INSTALL_DIR}")
 install(TARGETS edo DESTINATION "${EDO_LIB_INSTALL_DIR}")
 
 # Also compile test module
-add_subdirectory(tests)
+add_subdirectory(test)

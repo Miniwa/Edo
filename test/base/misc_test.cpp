@@ -11,7 +11,7 @@ struct FollowFixture
         std::vector<intptr_t> offs;
 };
 
-BOOST_AUTO_TEST_SUITE(misc_tests)
+BOOST_AUTO_TEST_SUITE(misc_test)
 
 BOOST_AUTO_TEST_CASE(test_split_with_two_values)
 {

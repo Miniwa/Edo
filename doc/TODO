@@ -4,6 +4,7 @@ Remove code not belonging in the current scope:
     - Remove endianness from ByteBuf
     - Refactor Bytebuf code
     - Improve error handling
+    - Fix find module
 
 Features:
     - x64 support (Deal with dependency on boost test)
