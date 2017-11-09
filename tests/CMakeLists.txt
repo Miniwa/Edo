@@ -6,6 +6,3 @@ if(NOT edo_BOOST_STATIC)
 endif(NOT edo_BOOST_STATIC)
 
 add_subdirectory(base)
-if(WIN32)
-    add_subdirectory(ext)
-endif(WIN32)
