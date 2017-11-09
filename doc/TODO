@@ -1,15 +1,13 @@
-Repurpose into static library for internal dll usage:
-    - Remove all external code
-    - Refactor CMake flow
- 
 Remove code not belonging in the current scope:
-    - Remove custom typedefs
+    - Rename edo-tests to edo-test
+    - Figure out a way of passing containers
     - Remove endianness from ByteBuf
-    - Refactor ButyBuf code
+    - Refactor Bytebuf code
     - Improve error handling
 
 Features:
-    - Add signscanning capabilities
+    - x64 support (Deal with dependency on boost test)
+    - Add sigscanning capabilities
     - Add hooking library (PolyHook, figure out a good way to integrate)
     - Packet analyzer
     - Look into the possibility of a winapi layer

@@ -4,9 +4,7 @@
 #include <vector>
 #include <string>
 
-#include "edo/base/types.hpp"
-
-#define EDO_ADDR(value) (reinterpret_cast<edo::memaddr>(&value))
+#define EDO_ADDR(value) (reinterpret_cast<uint8_t*>(&value))
 
 namespace edo
 {
@@ -14,10 +12,10 @@ namespace edo
     std::vector<std::string> split(const std::string& str, const char delim);
 
     /// Offsets a memory address by a given amount of offsets
-    memaddr follow(
-        memaddr base,
-        std::vector<memoffset>::iterator begin,
-        std::vector<memoffset>::iterator end
+    uint8_t* follow(
+        uint8_t* address,
+        std::vector<intptr_t>::iterator begin,
+        std::vector<intptr_t>::iterator end
     );
 }
 #endif

@@ -3,7 +3,6 @@
 
 #include <vector>
 
-#include "edo/base/types.hpp"
 #include "edo/base/strings.hpp"
 #include "edo/base/endian.hpp"
 
@@ -52,7 +51,7 @@ namespace edo
         void clear();
 
         /// Returns a pointer to the internal buffer
-        const byte* data();
+        const uint8_t* data();
 
         /// Sets the position of the buffer
         /// @throws out_of_range If position is outside buffer capacity
@@ -75,7 +74,7 @@ namespace edo
         /// @throws out_of_range If index exceeds buffer size
         void put(
             const std::size_t index,
-            const byte* data,
+            const uint8_t* data,
             const std::size_t length
         );
 
@@ -83,17 +82,17 @@ namespace edo
         /// position by length bytes
         /// @param data Pointer to the data to append
         /// @param length The length of the data array
-        void put(const byte* data, const std::size_t length);
+        void put(const uint8_t* data, const std::size_t length);
 
         /// Appends a vector of bytes to the buffer
-        void put(const std::size_t index, const std::vector<byte>& data);
-        void put(const std::vector<byte>& data);
+        void put(const std::size_t index, const std::vector<uint8_t>& data);
+        void put(const std::vector<uint8_t>& data);
 
         /// Appends an object of type T to buffer at given index
         template<typename T>
         void put(const std::size_t index, const T* object)
         {
-                put(index, reinterpret_cast<const byte*>(object), sizeof(T));
+                put(index, reinterpret_cast<const uint8_t*>(object), sizeof(T));
         }
 
         /// Appends an object of type T to buffer and advances the buffer
@@ -101,7 +100,7 @@ namespace edo
         template<typename T>
         void put(const T* object)
         {
-            put(reinterpret_cast<const byte*>(object), sizeof(T));
+            put(reinterpret_cast<const uint8_t*>(object), sizeof(T));
         }
 
         void put(const std::size_t index, const int8_t value);
@@ -199,7 +198,7 @@ namespace edo
         double get_d();
 
     private:
-        std::vector<byte> buffer;
+        std::vector<uint8_t> buffer;
         edo::endianness order;
         std::size_t position;
     };

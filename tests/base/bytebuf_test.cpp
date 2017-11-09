@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE(test_data_returns_proper_pointer)
     uint32_t i = 10;
     b.put(i);
 
-    const edo::byte* data_ptr = b.data();
+    const uint8_t* data_ptr = b.data();
     uint32_t* res = (uint32_t*)data_ptr;
 
     BOOST_REQUIRE(i == *res);
@@ -132,20 +132,20 @@ BOOST_AUTO_TEST_CASE(test_rewind_sets_position_to_zero)
 
 BOOST_AUTO_TEST_CASE(test_put_array_of_bytes_at_index)
 {
-    edo::byte val[] = {10, 20, 30, 40, 50};
+    uint8_t val[] = {10, 20, 30, 40, 50};
     b.put(0, val, 5);
     BOOST_REQUIRE(b.size() == 5);
     BOOST_REQUIRE(b.get_pos() == 0);
-    BOOST_REQUIRE(b.get<edo::byte>(0) == 10);
-    BOOST_REQUIRE(b.get<edo::byte>(1) == 20);
-    BOOST_REQUIRE(b.get<edo::byte>(2) == 30);
-    BOOST_REQUIRE(b.get<edo::byte>(3) == 40);
-    BOOST_REQUIRE(b.get<edo::byte>(4) == 50);
+    BOOST_REQUIRE(b.get<uint8_t>(0) == 10);
+    BOOST_REQUIRE(b.get<uint8_t>(1) == 20);
+    BOOST_REQUIRE(b.get<uint8_t>(2) == 30);
+    BOOST_REQUIRE(b.get<uint8_t>(3) == 40);
+    BOOST_REQUIRE(b.get<uint8_t>(4) == 50);
 }
 
 BOOST_AUTO_TEST_CASE(test_put_advances_position)
 {
-    edo::byte val = 10;
+    uint8_t val = 10;
     b.rewind();
     b.put(&val, sizeof(val));
 
@@ -155,19 +155,19 @@ BOOST_AUTO_TEST_CASE(test_put_advances_position)
 
 BOOST_AUTO_TEST_CASE(test_put_at_throws_out_of_range_when_index_exceeds_size)
 {
-    edo::byte val = 10;
+    uint8_t val = 10;
     BOOST_REQUIRE_THROW(b.put(b.size() + 1, &val, 1), std::out_of_range);
 }
 
 BOOST_AUTO_TEST_CASE(test_put_throws_when_index_less_than_zero)
 {
-    edo::byte val = 10;
+    uint8_t val = 10;
     BOOST_REQUIRE_THROW(b.put(-1, &val, sizeof(val)), std::out_of_range);
 }
 
 BOOST_AUTO_TEST_CASE(test_put_vector_of_bytes)
 {
-    std::vector<edo::byte> bytes;
+    std::vector<uint8_t> bytes;
     bytes.push_back(10);
     bytes.push_back(20);
 
@@ -178,7 +178,7 @@ BOOST_AUTO_TEST_CASE(test_put_vector_of_bytes)
 
 BOOST_AUTO_TEST_CASE(test_put_vector_of_bytes_moves_position)
 {
-    std::vector<edo::byte> bytes;
+    std::vector<uint8_t> bytes;
     bytes.push_back(10);
     bytes.push_back(20);
 

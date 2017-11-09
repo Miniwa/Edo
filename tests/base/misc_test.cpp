@@ -5,10 +5,10 @@ struct FollowFixture
 {
         FollowFixture()
         {
-            offs = std::vector<edo::memoffset>();
+            offs = std::vector<intptr_t>();
         }
 
-        std::vector<edo::memoffset> offs;
+        std::vector<intptr_t> offs;
 };
 
 BOOST_AUTO_TEST_SUITE(misc_tests)
@@ -47,7 +47,7 @@ BOOST_AUTO_TEST_CASE(test_split_empty_string)
 BOOST_FIXTURE_TEST_CASE(test_follow_with_no_offsets, FollowFixture)
 {
     int32_t i = 10;
-    edo::memaddr res = edo::follow(EDO_ADDR(i), offs.begin(), offs.end());
+    uint8_t* res = edo::follow(EDO_ADDR(i), offs.begin(), offs.end());
 
     BOOST_REQUIRE_EQUAL(&i, reinterpret_cast<int32_t*>(res));
 }
@@ -61,7 +61,7 @@ BOOST_FIXTURE_TEST_CASE(test_follow_with_multiple_offsets, FollowFixture)
     offs.push_back(0);
     offs.push_back(0);
 
-    edo::memaddr res = edo::follow(EDO_ADDR(pp), offs.begin(), offs.end());
+    uint8_t* res = edo::follow(EDO_ADDR(pp), offs.begin(), offs.end());
 
     BOOST_REQUIRE_EQUAL(reinterpret_cast<int32_t*>(res), &i);
 }
@@ -73,7 +73,7 @@ BOOST_FIXTURE_TEST_CASE(test_follow_with_non_zero_offset, FollowFixture)
 
     offs.push_back(sizeof(int32_t*));
 
-    edo::memaddr res = edo::follow(EDO_ADDR(ptr), offs.begin(), offs.end());
+    uint8_t* res = edo::follow(EDO_ADDR(ptr), offs.begin(), offs.end());
 
     BOOST_REQUIRE_EQUAL(reinterpret_cast<int32_t*>(res), &val);
 }

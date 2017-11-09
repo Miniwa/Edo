@@ -9,7 +9,7 @@ void edo::Bytebuf::put(const std::size_t index, const type value)\
 {\
     type aware_value = edo::native_to_order(value, order);\
 \
-    put(index, reinterpret_cast<const byte*>(\
+    put(index, reinterpret_cast<const uint8_t*>(\
         &aware_value),\
         sizeof(type)\
     );\
@@ -19,7 +19,7 @@ void edo::Bytebuf::put(const type value)\
 {\
     type aware_value = edo::native_to_order(value, order);\
 \
-    put(reinterpret_cast<const byte*>(&aware_value), sizeof(type));\
+    put(reinterpret_cast<const uint8_t*>(&aware_value), sizeof(type));\
 }\
 
 edo::Bytebuf::Bytebuf() : Bytebuf(endianness::native)
@@ -29,7 +29,7 @@ edo::Bytebuf::Bytebuf() : Bytebuf(endianness::native)
 
 edo::Bytebuf::Bytebuf(endianness order)
 {
-    this->buffer = std::vector<byte>();
+    this->buffer = std::vector<uint8_t>();
     this->order = order;
     this->position = 0;
 }
@@ -70,7 +70,7 @@ void edo::Bytebuf::clear()
     rewind();
 }
 
-const edo::byte* edo::Bytebuf::data()
+const uint8_t* edo::Bytebuf::data()
 {
     return buffer.data();
 }
@@ -98,7 +98,7 @@ void edo::Bytebuf::rewind()
     set_pos(0);
 }
 
-void edo::Bytebuf::put(const std::size_t index, const byte* data,
+void edo::Bytebuf::put(const std::size_t index, const uint8_t* data,
                             const std::size_t length)
 {
     if(index > size())
@@ -108,18 +108,18 @@ void edo::Bytebuf::put(const std::size_t index, const byte* data,
     buffer.insert(it, data, data + length);
 }
 
-void edo::Bytebuf::put(const byte* data, const std::size_t length)
+void edo::Bytebuf::put(const uint8_t* data, const std::size_t length)
 {
     put(get_pos(), data, length);
     move(length);
 }
 
-void edo::Bytebuf::put(const std::size_t index, const std::vector<byte>& data)
+void edo::Bytebuf::put(const std::size_t index, const std::vector<uint8_t>& data)
 {
     put(index, data.data(), data.size());
 }
 
-void edo::Bytebuf::put(const std::vector<byte>& data)
+void edo::Bytebuf::put(const std::vector<uint8_t>& data)
 {
     put(data.data(), data.size());
 }

@@ -4,7 +4,6 @@
 #include <map>
 #include <boost/lexical_cast.hpp>
 
-#include "edo/base/types.hpp"
 #include "edo/base/strings.hpp"
 
 namespace edo

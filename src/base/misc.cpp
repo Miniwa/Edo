@@ -22,17 +22,16 @@ std::vector<std::string> edo::split(const std::string& str, const char delim)
     return result;
 }
 
-edo::memaddr edo::follow(
-    edo::memaddr base,
-    std::vector<edo::memoffset>::iterator begin,
-    std::vector<edo::memoffset>::iterator end
+uint8_t* edo::follow(
+    uint8_t* address,
+    std::vector<intptr_t>::iterator begin,
+    std::vector<intptr_t>::iterator end
 )
 {
-    memaddr result = base;
-
+    uint8_t* result = address;
     for(auto it = begin; it != end; it++)
     {
-        result = *reinterpret_cast<memaddr*>(result + *it);
+        result = *reinterpret_cast<uint8_t**>(result + *it);
     }
 
     return result;
