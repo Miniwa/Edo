@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "edo/base/strings.hpp"
-#include "edo/base/endian.hpp"
 
 namespace std
 {
@@ -84,48 +83,18 @@ namespace edo
 
         /// Appends an object of type T to buffer at given index
         template<typename T>
-        void put(const std::size_t index, const T* object)
+        void put(const std::size_t index, const T object)
         {
-                put(index, reinterpret_cast<const uint8_t*>(object), sizeof(T));
+            put(index, reinterpret_cast<const uint8_t*>(&object), sizeof(T));
         }
 
         /// Appends an object of type T to buffer and advances the buffer
         /// by sizeof(T) bytes
         template<typename T>
-        void put(const T* object)
+        void put(const T object)
         {
-            put(reinterpret_cast<const uint8_t*>(object), sizeof(T));
+            put(reinterpret_cast<const uint8_t*>(&object), sizeof(T));
         }
-
-        void put(const std::size_t index, const int8_t value);
-        void put(const int8_t value);
-
-        void put(const std::size_t index, const int16_t value);
-        void put(const int16_t value);
-
-        void put(const std::size_t index, const int32_t value);
-        void put(const int32_t value);
-
-        void put(const std::size_t index, const int64_t value);
-        void put(const int64_t value);
-
-        void put(const std::size_t index, const uint8_t value);
-        void put(const uint8_t value);
-
-        void put(const std::size_t index, const uint16_t value);
-        void put(const uint16_t value);
-
-        void put(const std::size_t index, const uint32_t value);
-        void put(const uint32_t value);
-
-        void put(const std::size_t index, const uint64_t value);
-        void put(const uint64_t value);
-
-        void put(const std::size_t index, const float value);
-        void put(const float value);
-
-        void put(const std::size_t index, const double value);
-        void put(const double value);
 
         /// Gets an object of type T from given index
         /// @param index The index of where to get from

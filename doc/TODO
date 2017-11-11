@@ -1,7 +1,7 @@
-Remove code not belonging in the current scope:
+Backlog:
     - Refactor Bytebuf code
     - Improve error handling
-    - Fix find module
+    - Fix cmake find module
     - Figure out a way of passing containers
 
 Features:
