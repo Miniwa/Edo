@@ -3,40 +3,22 @@
 
 #include "edo/base/bytebuf.hpp"
 
-// Helpers to define all put operations of basic types
+// Helper to define all put operations of basic types
 #define PUT(type)\
 void edo::Bytebuf::put(const std::size_t index, const type value)\
 {\
-    type aware_value = edo::native_to_order(value, order);\
-\
-    put(index, reinterpret_cast<const uint8_t*>(\
-        &aware_value),\
-        sizeof(type)\
-    );\
+    put(index, reinterpret_cast<const uint8_t*>(&value), sizeof(type));\
 }\
 \
 void edo::Bytebuf::put(const type value)\
 {\
-    type aware_value = edo::native_to_order(value, order);\
-\
-    put(reinterpret_cast<const uint8_t*>(&aware_value), sizeof(type));\
+    put(reinterpret_cast<const uint8_t*>(&value), sizeof(type));\
 }\
 
-edo::Bytebuf::Bytebuf() : Bytebuf(endianness::native)
+edo::Bytebuf::Bytebuf()
 {
-
-}
-
-edo::Bytebuf::Bytebuf(endianness order)
-{
-    this->buffer = std::vector<uint8_t>();
-    this->order = order;
-    this->position = 0;
-}
-
-edo::endianness edo::Bytebuf::get_endianness()
-{
-    return order;
+    buffer = std::vector<uint8_t>();
+    position = 0;
 }
 
 std::size_t edo::Bytebuf::size()
@@ -99,7 +81,7 @@ void edo::Bytebuf::rewind()
 }
 
 void edo::Bytebuf::put(const std::size_t index, const uint8_t* data,
-                            const std::size_t length)
+    const std::size_t length)
 {
     if(index > size())
         throw std::out_of_range(OPERATION_EXCEEDS_SIZE);
@@ -140,50 +122,6 @@ PUT(uint32_t)
 
 PUT(uint64_t)
 
-void edo::Bytebuf::put(const std::size_t index, const float value)
-{
-    uint32_t serialized = *reinterpret_cast<const uint32_t*>(&value);
-    put(index, serialized);
-}
+PUT(float)
 
-void edo::Bytebuf::put(const float value)
-{
-    uint32_t serialized = *reinterpret_cast<const uint32_t*>(&value);
-    put(serialized);
-}
-
-void edo::Bytebuf::put(const std::size_t index, const double value)
-{
-    uint64_t serialized = *reinterpret_cast<const uint64_t*>(&value);
-    put(index, serialized);
-}
-
-void edo::Bytebuf::put(const double value)
-{
-    uint64_t serialized = *reinterpret_cast<const uint64_t*>(&value);
-    put(serialized);
-}
-
-float edo::Bytebuf::get_f(const std::size_t index)
-{
-    uint32_t serialized = get_n<uint32_t>(index);
-    return *reinterpret_cast<float*>(&serialized);
-}
-
-float edo::Bytebuf::get_f()
-{
-    uint32_t serialized = get_n<uint32_t>();
-    return *reinterpret_cast<float*>(&serialized);
-}
-
-double edo::Bytebuf::get_d(const std::size_t index)
-{
-    uint64_t serialized = get_n<uint64_t>(index);
-    return *reinterpret_cast<double*>(&serialized);
-}
-
-double edo::Bytebuf::get_d()
-{
-    uint64_t serialized = get_n<uint64_t>();
-    return *reinterpret_cast<double*>(&serialized);
-}
+PUT(double)

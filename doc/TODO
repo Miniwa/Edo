@@ -1,10 +1,8 @@
 Remove code not belonging in the current scope:
-    - Rename edo-tests to edo-test
-    - Figure out a way of passing containers
-    - Remove endianness from ByteBuf
     - Refactor Bytebuf code
     - Improve error handling
     - Fix find module
+    - Figure out a way of passing containers
 
 Features:
     - x64 support (Deal with dependency on boost test)

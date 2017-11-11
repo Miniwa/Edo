@@ -13,18 +13,12 @@ namespace std
 
 namespace edo
 {
-    /// An endian aware buffer of bytes
+    /// A buffer of bytes
     class Bytebuf
     {
     public:
         /// Default constructor
         Bytebuf();
-
-        /// Endian constructor
-        Bytebuf(endianness order);
-
-        /// Returns the endianness of the buffer
-        endianness get_endianness();
 
         /// Returns the size of the buffer
         std::size_t size();
@@ -163,43 +157,8 @@ namespace edo
             return res;
         }
 
-        /// Gets a number of type T from buffer, takes endianness into account
-        /// @param index The index of where to get from
-        /// @throws out_of_range If requested type is too large
-        template<typename T>
-        T get_n(const std::size_t index)
-        {
-            T val = get<T>(index);
-            return edo::order_to_native(val, order);
-        }
-
-        /// Gets a number of type T from buffer, takes endianness into account
-        /// position by sizeof(T) bytes
-        /// @throws out_of_range If requested type is too large
-        template<typename T>
-        T get_n()
-        {
-            T val = get<T>();
-            return edo::order_to_native(val, order);
-        }
-
-        /// Gets a float from given index
-        float get_f(const std::size_t index);
-
-        /// Gets a float from the buffer and advances the buffer position by
-        /// 4 bytes
-        float get_f();
-
-        /// Gets a double from given index
-        double get_d(const std::size_t index);
-
-        /// Gets a double from the buffer and advances the buffer position by
-        /// 8 bytes
-        double get_d();
-
     private:
         std::vector<uint8_t> buffer;
-        edo::endianness order;
         std::size_t position;
     };
 }
